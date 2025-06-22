@@ -33,4 +33,20 @@ public class DepartmentService {
             throw e; // Rethrow exception to be handled by the controller
         }
     }
+
+    public void deleteDepartment(Long id) {
+        try {
+            if (departmentRepository.existsById(id)) {
+                departmentRepository.deleteById(id);
+                logger.info("Deleted department with ID: " + id);
+            } else {
+                logger.warn("Department with ID " + id + " does not exist.");
+                throw new IllegalArgumentException("Department not found with id: " + id);
+            }
+        } catch (Exception e) {
+            logger.error("Error deleting department: " + e.getMessage(), e);
+            throw e; // Rethrow so Controller handles it
+        }
+    }
+
 }

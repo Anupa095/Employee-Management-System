@@ -40,6 +40,7 @@ public class EmployeeController {
             return ResponseEntity.ok(employee);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
         }
     }
 

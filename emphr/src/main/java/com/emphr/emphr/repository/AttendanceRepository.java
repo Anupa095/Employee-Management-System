@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
+public interface  AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     // Find attendance records by employee ID
     List<Attendance> findByEmployeeId(Long employeeId);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AttendanceService {
@@ -31,8 +32,23 @@ public class AttendanceService {
         return attendanceRepository.findByEmployeeId(employeeId);
     }
 
-    // Get all attendance records (new method)
+    // Get all attendance records
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
+    }
+
+    // ------- NEW: Get single attendance by id -------
+    public Optional<Attendance> getAttendanceById(Long id) {
+        return attendanceRepository.findById(id);
+    }
+
+    // ------- NEW: Delete attendance by id -------
+    public boolean deleteAttendance(Long id) {
+        if (attendanceRepository.existsById(id)) {
+            attendanceRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/attendance")
@@ -37,10 +38,48 @@ public class AttendanceController {
         return ResponseEntity.ok(attendances);
     }
 
-    // New endpoint to get all attendance records (GET)
+    // Endpoint to get all attendance records (GET)
     @GetMapping("/all")
     public ResponseEntity<List<Attendance>> getAllAttendance() {
         List<Attendance> attendances = attendanceService.getAllAttendance();
         return ResponseEntity.ok(attendances);
+    }
+
+    // -------- Update an attendance record (PUT) --------
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAttendance(@PathVariable Long id, @RequestBody Attendance updatedAttendance) {
+        try {
+            Optional<Attendance> existingAttendance = attendanceService.getAttendanceById(id);
+            if (existingAttendance.isPresent()) {
+                Attendance attendanceToUpdate = existingAttendance.get();
+                // Update fields (match your entity fields)
+                attendanceToUpdate.setDate(updatedAttendance.getDate());
+                attendanceToUpdate.setStatus(updatedAttendance.getStatus());
+                attendanceToUpdate.setEmployeeId(updatedAttendance.getEmployeeId());
+                Attendance savedAttendance = attendanceService.saveAttendance(attendanceToUpdate);
+                return ResponseEntity.ok(savedAttendance);
+            } else {
+                return ResponseEntity.status(404).body("Attendance record not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body("Error updating attendance: " + e.getMessage());
+        }
+    }
+
+    // -------- Delete an attendance record (DELETE) --------
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAttendance(@PathVariable Long id) {
+        try {
+            boolean deleted = attendanceService.deleteAttendance(id);
+            if (deleted) {
+                return ResponseEntity.ok("Attendance deleted successfully.");
+            } else {
+                return ResponseEntity.status(404).body("Attendance record not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body("Error deleting attendance: " + e.getMessage());
+        }
     }
 }
